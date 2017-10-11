@@ -1,4 +1,4 @@
-﻿namespace k8s
+namespace k8s
 {
     using System;
     using System.Diagnostics;
@@ -35,6 +35,22 @@
         public static string Base64Decode(string text)
         {
             return Encoding.UTF8.GetString(Convert.FromBase64String(text));
+        }
+
+        /// <summary>
+        /// Load pem encoded cert file
+        /// </summary>
+        /// <param name="file">Path to pem encoded cert file</param>
+        /// <returns>x509 instance.</returns>
+        public static X509Certificate2 LoadPemFileCert(string file)
+        {
+            var certdata = File.ReadAllText(file)
+                .Replace("-----BEGIN CERTIFICATE-----", "")
+                .Replace("-----END CERTIFICATE-----", "")
+                .Replace("\r", "")
+                .Replace("\n", "");
+
+            return new X509Certificate2(Convert.FromBase64String(certdata));
         }
 
         /// <summary>
@@ -86,3 +102,4 @@
         }
     }
 }
+
