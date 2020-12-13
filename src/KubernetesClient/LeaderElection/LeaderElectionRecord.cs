@@ -35,15 +35,27 @@ namespace k8s.LeaderElection
 
         protected bool Equals(LeaderElectionRecord other)
         {
-            return HolderIdentity == other.HolderIdentity && Nullable.Equals(AcquireTime, other.AcquireTime) && Nullable.Equals(RenewTime, other.RenewTime);
+            return HolderIdentity == other?.HolderIdentity && Nullable.Equals(AcquireTime, other.AcquireTime) && Nullable.Equals(RenewTime, other.RenewTime);
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((LeaderElectionRecord) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != this.GetType())
+            {
+                return false;
+            }
+
+            return Equals((LeaderElectionRecord)obj);
         }
 
         public override int GetHashCode()

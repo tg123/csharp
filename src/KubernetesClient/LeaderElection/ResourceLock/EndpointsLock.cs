@@ -39,7 +39,8 @@ namespace k8s.LeaderElection.ResourceLock
             }
 
             var record =
-                JsonConvert.DeserializeObject<LeaderElectionRecord>(recordRawStringContent,
+                JsonConvert.DeserializeObject<LeaderElectionRecord>(
+                    recordRawStringContent,
                     client.DeserializationSettings);
 
             Interlocked.Exchange(ref endpointsLocal, endpoints);
@@ -48,7 +49,11 @@ namespace k8s.LeaderElection.ResourceLock
 
         public async Task<bool> CreateAsync(LeaderElectionRecord record, CancellationToken cancellationToken = default)
         {
-            var endpoints = new V1Endpoints();
+            var endpoints = new V1Endpoints(metadata: new V1ObjectMeta()
+            {
+                Name = name,
+                NamespaceProperty = ns,
+            });
 
             endpoints.SetAnnotation(
                 LeaderElectionRecordAnnotationKey,

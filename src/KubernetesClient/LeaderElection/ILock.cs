@@ -5,7 +5,7 @@ using k8s.KubeConfigModels;
 namespace k8s.LeaderElection
 {
     /// <summary>
-    /// ILock offers a common interface for locking on arbitrary resources used in leader election. The Interface is used to hide the details on specific implementations in order to allow them to change over time. 
+    /// ILock offers a common interface for locking on arbitrary resources used in leader election. The Interface is used to hide the details on specific implementations in order to allow them to change over time.
     /// </summary>
     public interface ILock
     {

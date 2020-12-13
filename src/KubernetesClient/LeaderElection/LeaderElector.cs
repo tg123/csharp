@@ -57,7 +57,7 @@ namespace k8s.LeaderElection
                 OnStartedLeading?.Invoke();
 
                 // renew loop
-                for (;;)
+                for (; ;)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     var acq = TryAcquireOrRenew(cancellationToken);
@@ -174,7 +174,7 @@ namespace k8s.LeaderElection
             try
             {
                 var delay = config.RetryPeriod.Milliseconds;
-                for (;;)
+                for (; ;)
                 {
                     var acq = TryAcquireOrRenew(cancellationToken);
 
@@ -187,7 +187,7 @@ namespace k8s.LeaderElection
                         }
                     }
 
-                    delay = (int) (delay * JitterFactor);
+                    delay = (int)(delay * JitterFactor);
                 }
             }
             finally
