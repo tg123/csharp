@@ -21,12 +21,14 @@ namespace k8s.LeaderElection
         /// <summary>
         /// acquire time
         /// </summary>
-        public DateTimeOffset? AcquireTime { get; set; }
+        // public DateTimeOffset? AcquireTime { get; set; }
+        public DateTime? AcquireTime { get; set; }
 
         /// <summary>
         /// renew time
         /// </summary>
-        public DateTimeOffset? RenewTime { get; set; }
+        // public DateTimeOffset? RenewTime { get; set; }
+        public DateTime? RenewTime { get; set; }
 
         /// <summary>
         /// leader transitions

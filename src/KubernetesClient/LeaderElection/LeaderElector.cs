@@ -29,7 +29,7 @@ namespace k8s.LeaderElection
         /// </summary>
         public event Action<string> OnNewLeader;
 
-        private LeaderElectionRecord observedRecord;
+        private volatile LeaderElectionRecord observedRecord;
         private DateTimeOffset observedTime = DateTimeOffset.MinValue;
         private string reportedLeader;
 
@@ -94,8 +94,8 @@ namespace k8s.LeaderElection
             {
                 HolderIdentity = l.Identity,
                 LeaseDurationSeconds = config.LeaseDuration.Seconds,
-                AcquireTime = DateTimeOffset.Now,
-                RenewTime = DateTimeOffset.Now,
+                AcquireTime = DateTime.UtcNow,
+                RenewTime = DateTime.UtcNow,
                 LeaderTransitions = 0,
             };
 
@@ -131,7 +131,7 @@ namespace k8s.LeaderElection
 
 
             // 2. Record obtained, check the Identity & Time
-            if (Equals(observedRecord, oldLeaderElectionRecord))
+            if (!Equals(observedRecord, oldLeaderElectionRecord))
             {
                 observedRecord = oldLeaderElectionRecord;
                 observedTime = DateTimeOffset.Now;
@@ -171,11 +171,11 @@ namespace k8s.LeaderElection
 
         private async Task AcquireAsync(CancellationToken cancellationToken)
         {
-            try
+            for (; ; )
             {
-                var delay = config.RetryPeriod.Milliseconds;
-                for (; ;)
+                try
                 {
+                    var delay = config.RetryPeriod.Milliseconds;
                     var acq = TryAcquireOrRenew(cancellationToken);
 
                     if (await Task.WhenAny(acq, Task.Delay(delay, cancellationToken))
@@ -189,10 +189,10 @@ namespace k8s.LeaderElection
 
                     delay = (int)(delay * JitterFactor);
                 }
-            }
-            finally
-            {
-                MaybeReportTransition();
+                finally
+                {
+                    MaybeReportTransition();
+                }
             }
         }
 

@@ -57,12 +57,12 @@ namespace k8s.LeaderElection.ResourceLock
 
             endpoints.SetAnnotation(
                 LeaderElectionRecordAnnotationKey,
-                JsonConvert.SerializeObject(record, client.DeserializationSettings));
+                JsonConvert.SerializeObject(record, client.SerializationSettings));
 
             try
             {
                 var createdendpoints = await client
-                    .CreateNamespacedEndpointsAsync(endpoints, name, ns, cancellationToken: cancellationToken)
+                    .CreateNamespacedEndpointsAsync(endpoints, ns, cancellationToken: cancellationToken)
                     .ConfigureAwait(false);
 
                 Interlocked.Exchange(ref endpointsLocal, createdendpoints);
