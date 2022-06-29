@@ -8,6 +8,10 @@ jobs:
         os: [ubuntu-latest, windows-latest, macOS-latest]
     name: Dotnet build
     steps:
+      - name: start minikube
+        id: minikube
+        uses: medyagh/setup-minikube@latest
+    
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
