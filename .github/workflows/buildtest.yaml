@@ -86,6 +86,33 @@ jobs:
             exit 1
           fi      
 
+  e2e-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: |
+           '3.1.x'
+           '5.0.x'
+           '6.0.x'      
+      - name: Kind
+        run: kind create cluster
+      - name: Test
+        shell: pwsh
+        env:
+          K8S_E2E_MINIKUBE: 1
+        run: |
+          $null > skip.log
+          dotnet test tests/E2E.Tests --logger "SkipTestLogger;file=$(Get-Location)\skip.log"
+          if ($skip) { 
+            Write-Error "$skip"; 
+            throw "CASES MUST NOT BE SKIPPED" 
+          }          
+
 on:
   pull_request:
     types: [assigned, opened, synchronize, reopened]
